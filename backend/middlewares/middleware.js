@@ -1,12 +1,11 @@
-const jwt_secret = require("../config.js");
 const jwt = require("jsonwebtoken");
 
 const authMiddleware = async (req, res, next) => {
     try{
         const token = req.headers.authorization;
 
-        if(!token){
-            jwt.verify(token, jwt_secret, (err, decode) => {
+        if(token){
+            jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
                 if(err){
                     return res.status(403).json({
                         success : "false",
@@ -16,6 +15,11 @@ const authMiddleware = async (req, res, next) => {
                     req.body.id = decode.id;
                     next();
                 }
+            })
+        }else{
+            return res.status(401).json({
+                success : false,
+                message : "send token"
             })
         }
     }catch(e){

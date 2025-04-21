@@ -1,8 +1,15 @@
+const { userModel } = require("../db.js");
+
+const jwt = require("jsonwebtoken");
+
+const bcrypt = require("bcrypt");
+
 const signinController = async (req, res) => {
     try{
         const { userName, password } = req.body;
 
         const user = await userModel.findOne({userName : userName});
+
 
         if(!user){
             res.send(411).json({
@@ -20,7 +27,7 @@ const signinController = async (req, res) => {
         }
 
         //generate the token
-        const token = jwt.sign({id : user._id}, jwt_secret, {expiresIn : "7d"});
+        const token = jwt.sign({id : user._id}, process.env.JWT_SECRET, {expiresIn : "7d"});
 
         return res.status(200).send({
             suceess : "true",

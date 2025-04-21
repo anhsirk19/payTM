@@ -1,11 +1,14 @@
 const { nameSchema, emailSchema, passwordSchema } = require("../zodSchemas/schema.js");
 
+const { userModel } = require("../db.js");
+
+const bcrypt  = require("bcrypt");
 
 const signupController = async (req, res) => {
     try{
         const { userName, firstName, lastName, password } = req.body;
 
-        if(!nameSchema.safeParse(firstName).suceess || !nameSchema.safeParse(lastName).success || !emailSchema.safeParse(userName).success || !passwordSchema.safeParse(password).success){
+        if(!nameSchema.safeParse(firstName).success || !nameSchema.safeParse(lastName).success || !emailSchema.safeParse(userName).success || !passwordSchema.safeParse(password).success){
             return res.status(400).json({
                 success : "false",
                 message : " zod schema validations are wrong , incorrect inputs"
@@ -15,7 +18,7 @@ const signupController = async (req, res) => {
         const userAlredyPresent = await userModel.findOne({userName : userName});
 
         if(userAlredyPresent){
-            res.send(409).json({
+            res.status(401).json({
                 success : "false",
                 message : " user already exist !, you can sign in"
             })
