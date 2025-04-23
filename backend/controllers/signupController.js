@@ -35,8 +35,8 @@ const signupController = async (req, res) => {
         })
 
         //give random balance to the user
-        accountModel.create({
-            userID,
+        await accountModel.create({
+            userId : user._id,
             balance : 1 + Math.random()*10000
         })
 
