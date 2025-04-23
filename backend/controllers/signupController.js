@@ -1,6 +1,6 @@
 const { nameSchema, emailSchema, passwordSchema } = require("../zodSchemas/schema.js");
 
-const { userModel } = require("../db.js");
+const { userModel, accountModel } = require("../db.js");
 
 const bcrypt  = require("bcrypt");
 
@@ -33,6 +33,13 @@ const signupController = async (req, res) => {
             lastName,
             password : hashedPassword
         })
+
+        //give random balance to the user
+        accountModel.create({
+            userID,
+            balance : 1 + Math.random()*10000
+        })
+
 
         return res.status(200).send({
             suceess : "true",
